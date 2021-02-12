@@ -136,10 +136,7 @@ func (s *CarrierServiceOp) List() ([]CarrierResource, error) {
 	path := fmt.Sprintf("%s.json", carrierBasePath)
 	resource := new(ListCarrierResource)
 	err := s.client.Get(path, resource, nil)
-	if err != nil {
-		return nil, err
-	}
-	return resource.CarrierServices, nil
+	return resource.CarrierServices, err
 }
 
 // Get individual carrier resource by carrier resource ID
@@ -147,9 +144,6 @@ func (s *CarrierServiceOp) Get(id int64) (*CarrierResource, error) {
 	path := fmt.Sprintf("%s/%d.json", carrierBasePath, id)
 	resource := new(SingleCarrierResource)
 	err := s.client.Get(path, resource, nil)
-	if err != nil {
-		return nil, err
-	}
 	return resource.CarrierService, err
 }
 
@@ -161,9 +155,6 @@ func (s *CarrierServiceOp) Create(carrier CarrierResource) (*CarrierResource, er
 	}
 	resource := new(SingleCarrierResource)
 	err := s.client.Post(path, body, resource)
-	if err != nil {
-		return nil, err
-	}
 	return resource.CarrierService, err
 }
 
@@ -175,9 +166,6 @@ func (s *CarrierServiceOp) Update(carrier CarrierResource) (*CarrierResource, er
 	}
 	resource := new(SingleCarrierResource)
 	err := s.client.Put(path, body, resource)
-	if err != nil {
-		return nil, err
-	}
 	return resource.CarrierService, err
 }
 
