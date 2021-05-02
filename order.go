@@ -308,26 +308,44 @@ type TaxLine struct {
 	Rate  *decimal.Decimal `json:"rate,omitempty"`
 }
 
+type ExtendedAuthorizationAttributes struct {
+	StandardAuthorizationExpiresAt *time.Time `json:"standard_authorization_expires_at,omitempty"`
+	ExtendedAuthorizationExpiresAt *time.Time `json:"extended_authorization_expires_at,omitempty"`
+}
+
+type CurrencyExchangeAdjustment struct {
+	ID             int64  `json:"id,omitempty"`
+	Adjustment     string `json:"adjustment,omitempty"`
+	OriginalAmount string `json:"original_amount,omitempty"`
+	FinalAmount    string `json:"final_amount,omitempty"`
+	Currency       string `json:"currency,omitempty"`
+}
+
 type Transaction struct {
-	ID             int64            `json:"id,omitempty"`
-	OrderID        int64            `json:"order_id,omitempty"`
-	Amount         *decimal.Decimal `json:"amount,omitempty"`
-	Kind           string           `json:"kind,omitempty"`
-	Gateway        string           `json:"gateway,omitempty"`
-	Status         string           `json:"status,omitempty"`
-	Message        string           `json:"message,omitempty"`
-	CreatedAt      *time.Time       `json:"created_at,omitempty"`
-	Test           bool             `json:"test,omitempty"`
-	Authorization  string           `json:"authorization,omitempty"`
-	Currency       string           `json:"currency,omitempty"`
-	LocationID     *int64           `json:"location_id,omitempty"`
-	UserID         *int64           `json:"user_id,omitempty"`
-	ParentID       *int64           `json:"parent_id,omitempty"`
-	DeviceID       *int64           `json:"device_id,omitempty"`
-	ErrorCode      string           `json:"error_code,omitempty"`
-	SourceName     string           `json:"source_name,omitempty"`
-	Source         string           `json:"source,omitempty"`
-	PaymentDetails *PaymentDetails  `json:"payment_details,omitempty"`
+	ID                              int64                            `json:"id,omitempty"`
+	OrderID                         int64                            `json:"order_id,omitempty"`
+	Amount                          *decimal.Decimal                 `json:"amount,omitempty"`
+	Kind                            string                           `json:"kind,omitempty"`
+	Gateway                         string                           `json:"gateway,omitempty"`
+	Status                          string                           `json:"status,omitempty"`
+	Message                         string                           `json:"message,omitempty"`
+	CreatedAt                       *time.Time                       `json:"created_at,omitempty"`
+	ProcessedAt                     *time.Time                       `json:"processed_at,omitempty"`
+	Test                            bool                             `json:"test,omitempty"`
+	Authorization                   string                           `json:"authorization,omitempty"`
+	AuthorizationExpiresAt          *time.Time                       `json:"authorization_expires_at,omitempty"`
+	ExtendedAuthorizationAttributes *ExtendedAuthorizationAttributes `json:"extended_authorization_attributes,omitempty"`
+	Currency                        string                           `json:"currency,omitempty"`
+	CurrencyExchangeAdjustment      *CurrencyExchangeAdjustment      `json:"currency_exchange_adjustment,omitempty"`
+	LocationID                      *int64                           `json:"location_id,omitempty"`
+	UserID                          *int64                           `json:"user_id,omitempty"`
+	ParentID                        *int64                           `json:"parent_id,omitempty"`
+	DeviceID                        *int64                           `json:"device_id,omitempty"`
+	ErrorCode                       string                           `json:"error_code,omitempty"`
+	SourceName                      string                           `json:"source_name,omitempty"`
+	Source                          string                           `json:"source,omitempty"`
+	PaymentDetails                  *PaymentDetails                  `json:"payment_details,omitempty"`
+	Receipt                         map[string]interface{}           `json:"receipt,omitempty"`
 }
 
 type ClientDetails struct {
