@@ -151,6 +151,10 @@ func (app App) VerifyWebhookRequestVerbose(httpRequest *http.Request) (bool, err
 	return HMACSame, nil
 }
 
+// Verifies an app proxy request, sent by Shopify.
+// When Shopify proxies HTTP requests to the proxy URL,
+// Shopify adds a signature paramter that is used to verify that the request was sent by Shopify.
+// https://shopify.dev/tutorials/display-dynamic-store-data-with-app-proxies
 func (app App) VerifySignature(u *url.URL) bool {
 	val := u.Query()
 	sig := val.Get("signature")
