@@ -65,6 +65,11 @@ type OrderListOptions struct {
 	ProcessedAtMin    time.Time `url:"processed_at_min,omitempty"`
 	ProcessedAtMax    time.Time `url:"processed_at_max,omitempty"`
 	Order             string    `url:"order,omitempty"`
+	// Name parameter is the order_number in order object.
+	// It is not documented by usable since at least 2013, and Shopify support mentions the existence,
+	// so hopefully will not silently disappear.
+	// https://community.shopify.com/c/shopify-apis-and-sdks/retrieving-an-order-using-the-order-number/td-p/44747
+	Name int `url:"name,omitempty"`
 }
 
 // A struct of all available order cancel options.
