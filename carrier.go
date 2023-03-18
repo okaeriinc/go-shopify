@@ -9,10 +9,10 @@ import (
 
 const carrierBasePath = "carrier_services"
 
-// CarrierService is an interface for interfacing with the carrier service endpoints
+// CarrierServiceService is an interface for interfacing with the carrier service endpoints
 // of the Shopify API.
 // See: https://shopify.dev/docs/admin-api/rest/reference/shipping-and-fulfillment/carrierservice
-type CarrierService interface {
+type CarrierServiceService interface {
 	List() ([]CarrierResource, error)
 	Get(int64) (*CarrierResource, error)
 	Create(CarrierResource) (*CarrierResource, error)
@@ -32,13 +32,13 @@ type CarrierResource struct {
 	Active bool `json:"active,omitempty"`
 
 	// The URL endpoint that Shopify needs to retrieve shipping rates. This must be a public URL.
-	CallbackURL string `json:"callback_url,omitempty"`
+	CallbackUrl string `json:"callback_url,omitempty"`
 
 	// Distinguishes between API or legacy carrier services.
 	CarrierServiceType string `json:"carrier_service_type,omitempty"`
 
-	// The ID of the carrier service.
-	ID int64 `json:"id,omitempty"`
+	// The Id of the carrier service.
+	Id int64 `json:"id,omitempty"`
 
 	// The format of the data returned by the URL endpoint. Valid values: json and xml. Default value: json.
 	Format string `json:"format,omitempty"`
@@ -160,7 +160,7 @@ func (s *CarrierServiceOp) Create(carrier CarrierResource) (*CarrierResource, er
 
 // Update a carrier service
 func (s *CarrierServiceOp) Update(carrier CarrierResource) (*CarrierResource, error) {
-	path := fmt.Sprintf("%s/%d.json", carrierBasePath, carrier.ID)
+	path := fmt.Sprintf("%s/%d.json", carrierBasePath, carrier.Id)
 	body := SingleCarrierResource{
 		CarrierService: &carrier,
 	}
@@ -170,6 +170,6 @@ func (s *CarrierServiceOp) Update(carrier CarrierResource) (*CarrierResource, er
 }
 
 // Delete a carrier service
-func (s *CarrierServiceOp) Delete(productID int64) error {
-	return s.client.Delete(fmt.Sprintf("%s/%d.json", carrierBasePath, productID))
+func (s *CarrierServiceOp) Delete(id int64) error {
+	return s.client.Delete(fmt.Sprintf("%s/%d.json", carrierBasePath, id))
 }
