@@ -13,10 +13,10 @@ const carrierBasePath = "carrier_services"
 // of the Shopify API.
 // See: https://shopify.dev/docs/admin-api/rest/reference/shipping-and-fulfillment/carrierservice
 type CarrierServiceService interface {
-	List() ([]CarrierResource, error)
-	Get(int64) (*CarrierResource, error)
-	Create(CarrierResource) (*CarrierResource, error)
-	Update(CarrierResource) (*CarrierResource, error)
+	List() ([]CarrierService, error)
+	Get(int64) (*CarrierService, error)
+	Create(CarrierService) (*CarrierService, error)
+	Update(CarrierService) (*CarrierService, error)
 	Delete(int64) error
 }
 
@@ -26,8 +26,8 @@ type CarrierServiceOp struct {
 	client *Client
 }
 
-// CarrierResource represents a Shopify carrier service
-type CarrierResource struct {
+// CarrierService represents a Shopify carrier service
+type CarrierService struct {
 	// Whether this carrier service is active.
 	Active bool `json:"active,omitempty"`
 
@@ -53,11 +53,11 @@ type CarrierResource struct {
 }
 
 type SingleCarrierResource struct {
-	CarrierService *CarrierResource `json:"carrier_service"`
+	CarrierService *CarrierService `json:"carrier_service"`
 }
 
 type ListCarrierResource struct {
-	CarrierServices []CarrierResource `json:"carrier_services"`
+	CarrierServices []CarrierService `json:"carrier_services"`
 }
 
 type ShippingRateRequest struct {
@@ -132,7 +132,7 @@ type ShippingRate struct {
 }
 
 // List carrier services
-func (s *CarrierServiceOp) List() ([]CarrierResource, error) {
+func (s *CarrierServiceOp) List() ([]CarrierService, error) {
 	path := fmt.Sprintf("%s.json", carrierBasePath)
 	resource := new(ListCarrierResource)
 	err := s.client.Get(path, resource, nil)
@@ -140,7 +140,7 @@ func (s *CarrierServiceOp) List() ([]CarrierResource, error) {
 }
 
 // Get individual carrier resource by carrier resource ID
-func (s *CarrierServiceOp) Get(id int64) (*CarrierResource, error) {
+func (s *CarrierServiceOp) Get(id int64) (*CarrierService, error) {
 	path := fmt.Sprintf("%s/%d.json", carrierBasePath, id)
 	resource := new(SingleCarrierResource)
 	err := s.client.Get(path, resource, nil)
@@ -148,7 +148,7 @@ func (s *CarrierServiceOp) Get(id int64) (*CarrierResource, error) {
 }
 
 // Create a carrier service
-func (s *CarrierServiceOp) Create(carrier CarrierResource) (*CarrierResource, error) {
+func (s *CarrierServiceOp) Create(carrier CarrierService) (*CarrierService, error) {
 	path := fmt.Sprintf("%s.json", carrierBasePath)
 	body := SingleCarrierResource{
 		CarrierService: &carrier,
@@ -159,7 +159,7 @@ func (s *CarrierServiceOp) Create(carrier CarrierResource) (*CarrierResource, er
 }
 
 // Update a carrier service
-func (s *CarrierServiceOp) Update(carrier CarrierResource) (*CarrierResource, error) {
+func (s *CarrierServiceOp) Update(carrier CarrierService) (*CarrierService, error) {
 	path := fmt.Sprintf("%s/%d.json", carrierBasePath, carrier.Id)
 	body := SingleCarrierResource{
 		CarrierService: &carrier,

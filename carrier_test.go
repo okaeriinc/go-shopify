@@ -20,7 +20,7 @@ func TestCarrierList(t *testing.T) {
 		t.Errorf("Carrier.List returned error: %v", err)
 	}
 
-	expected := []CarrierResource{
+	expected := []CarrierService{
 		{
 			Id:                 1,
 			Name:               "Shipping Rate Provider",
@@ -49,7 +49,7 @@ func TestCarrierGet(t *testing.T) {
 		t.Errorf("Carrier.Get returned error: %v", err)
 	}
 
-	expected := &CarrierResource{
+	expected := &CarrierService{
 		Id:                 1,
 		Name:               "Shipping Rate Provider",
 		Active:             true,
@@ -71,12 +71,12 @@ func TestCarrierCreate(t *testing.T) {
 	httpmock.RegisterResponder("POST", fmt.Sprintf("https://fooshop.myshopify.com/%s/carrier_services.json", client.pathPrefix),
 		httpmock.NewBytesResponder(200, loadFixture("carrier_service.json")))
 
-	carrier, err := client.CarrierService.Create(CarrierResource{})
+	carrier, err := client.CarrierService.Create(CarrierService{})
 	if err != nil {
 		t.Errorf("Carrier.Create returned error: %v", err)
 	}
 
-	expected := &CarrierResource{
+	expected := &CarrierService{
 		Id:                 1,
 		Name:               "Shipping Rate Provider",
 		Active:             true,
@@ -98,12 +98,12 @@ func TestCarrierUpdate(t *testing.T) {
 	httpmock.RegisterResponder("PUT", fmt.Sprintf("https://fooshop.myshopify.com/%s/carrier_services/1.json", client.pathPrefix),
 		httpmock.NewBytesResponder(200, loadFixture("carrier_service.json")))
 
-	carrier, err := client.CarrierService.Update(CarrierResource{Id: 1})
+	carrier, err := client.CarrierService.Update(CarrierService{Id: 1})
 	if err != nil {
 		t.Errorf("Carrier.Update returned error: %v", err)
 	}
 
-	expected := &CarrierResource{
+	expected := &CarrierService{
 		Id:                 1,
 		Name:               "Shipping Rate Provider",
 		Active:             true,
