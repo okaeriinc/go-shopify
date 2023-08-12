@@ -254,7 +254,7 @@ func TestDraftOrderComplete(t *testing.T) {
 		params,
 		httpmock.NewBytesResponder(200, loadFixture("draft_order.json")))
 
-	draftOrder, err := client.DraftOrder.Complete(1, false)
+	draftOrder, err := client.DraftOrder.Complete(1, false, "")
 	if err != nil {
 		t.Errorf("DraftOrder.Complete returned an error %v", err)
 	}
@@ -271,7 +271,7 @@ func TestDraftOrderCompletePending(t *testing.T) {
 		params,
 		httpmock.NewBytesResponder(200, loadFixture("draft_order.json")))
 
-	draftOrder, err := client.DraftOrder.Complete(1, true)
+	draftOrder, err := client.DraftOrder.Complete(1, true, "")
 	if err != nil {
 		t.Errorf("DraftOrder.Complete returned an error %v", err)
 	}
