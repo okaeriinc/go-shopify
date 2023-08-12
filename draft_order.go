@@ -44,7 +44,7 @@ type DraftOrder struct {
 	ShippingAddress *Address         `json:"shipping_address,omitempty"`
 	BillingAddress  *Address         `json:"billing_address,omitempty"`
 	Note            string           `json:"note,omitempty"`
-	NoteAttributes  []NoteAttribute  `json:"note_attribute,omitempty"`
+	NoteAttributes  []NoteAttribute  `json:"note_attributes,omitempty"`
 	Email           string           `json:"email,omitempty"`
 	Currency        string           `json:"currency,omitempty"`
 	InvoiceSentAt   *time.Time       `json:"invoice_sent_at,omitempty"`
@@ -56,6 +56,7 @@ type DraftOrder struct {
 	AppliedDiscount *AppliedDiscount `json:"applied_discount,omitempty"`
 	TaxesIncluded   bool             `json:"taxes_included,omitempty"`
 	TotalTax        string           `json:"total_tax,omitempty"`
+	TaxExempt       *bool            `json:"tax_exempt,omitempty"`
 	TotalPrice      string           `json:"total_price,omitempty"`
 	SubtotalPrice   *decimal.Decimal `json:"subtotal_price,omitempty"`
 	CompletedAt     *time.Time       `json:"completed_at,omitempty"`
@@ -68,7 +69,7 @@ type DraftOrder struct {
 
 // AppliedDiscount is the discount applied to the line item or the draft order object.
 type AppliedDiscount struct {
-	Title       string `json:"applied_discount,omitempty"`
+	Title       string `json:"title,omitempty"`
 	Description string `json:"description,omitempty"`
 	Value       string `json:"value,omitempty"`
 	ValueType   string `json:"value_type,omitempty"`
@@ -99,22 +100,22 @@ type DraftOrderInvoiceResource struct {
 // DraftOrderListOptions represents the possible options that can be used
 // to further query the list draft orders endpoint
 type DraftOrderListOptions struct {
-	Fields       string     `url:"fields,omitempty"`
-	Limit        int        `url:"limit,omitempty"`
-	SinceID      int64      `url:"since_id,omitempty"`
-	UpdatedAtMin *time.Time `url:"updated_at_min,omitempty"`
-	UpdatedAtMax *time.Time `url:"updated_at_max,omitempty"`
-	IDs          string     `url:"ids,omitempty"`
-	Status       string     `url:"status,omitempty"`
+	Fields       string      `url:"fields,omitempty"`
+	Limit        int         `url:"limit,omitempty"`
+	SinceID      int64       `url:"since_id,omitempty"`
+	UpdatedAtMin *time.Time  `url:"updated_at_min,omitempty"`
+	UpdatedAtMax *time.Time  `url:"updated_at_max,omitempty"`
+	IDs          string      `url:"ids,omitempty"`
+	Status       orderStatus `url:"status,omitempty"`
 }
 
 // DraftOrderCountOptions represents the possible options to the count draft orders endpoint
 type DraftOrderCountOptions struct {
-	Fields  string `url:"fields,omitempty"`
-	Limit   int    `url:"limit,omitempty"`
-	SinceID int64  `url:"since_id,omitempty"`
-	IDs     string `url:"ids,omitempty"`
-	Status  string `url:"status,omitempty"`
+	Fields  string      `url:"fields,omitempty"`
+	Limit   int         `url:"limit,omitempty"`
+	SinceID int64       `url:"since_id,omitempty"`
+	IDs     string      `url:"ids,omitempty"`
+	Status  orderStatus `url:"status,omitempty"`
 }
 
 // Create draft order

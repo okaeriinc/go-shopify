@@ -2,11 +2,7 @@ package goshopify
 
 import (
 	"fmt"
-	"net/http"
-	"net/url"
 	"regexp"
-	"strconv"
-	"strings"
 	"time"
 )
 
@@ -38,6 +34,24 @@ type ProductServiceOp struct {
 	client *Client
 }
 
+type productStatus string
+
+// https://shopify.dev/docs/api/admin-rest/2023-07/resources/product#resource-object
+const (
+	//The product is ready to sell and is available to customers on the online store,
+	//sales channels, and apps. By default, existing products are set to active.
+	ProductStatusActive productStatus = "active"
+
+	//The product is no longer being sold and isn't available to customers on sales
+	//channels and apps.
+	ProductStatusArchived productStatus = "archived"
+
+	//The product isn't ready to sell and is unavailable to customers on sales
+	//channels and apps. By default, duplicated and unarchived products are set to
+	//draft.
+	ProductStatucDraft productStatus = "draft"
+)
+
 // Product represents a Shopify product
 type Product struct {
 	ID                             int64           `json:"id,omitempty"`
@@ -51,6 +65,7 @@ type Product struct {
 	PublishedAt                    *time.Time      `json:"published_at,omitempty"`
 	PublishedScope                 string          `json:"published_scope,omitempty"`
 	Tags                           string          `json:"tags,omitempty"`
+	Status                         productStatus   `json:"status,omitempty"`
 	Options                        []ProductOption `json:"options,omitempty"`
 	Variants                       []Variant       `json:"variants,omitempty"`
 	Image                          Image           `json:"image,omitempty"`
@@ -112,87 +127,13 @@ func (s *ProductServiceOp) List(options interface{}) ([]Product, error) {
 func (s *ProductServiceOp) ListWithPagination(options interface{}) ([]Product, *Pagination, error) {
 	path := fmt.Sprintf("%s.json", productsBasePath)
 	resource := new(ProductsResource)
-	headers := http.Header{}
 
-	headers, err := s.client.createAndDoGetHeaders("GET", path, nil, options, resource)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	// Extract pagination info from header
-	linkHeader := headers.Get("Link")
-
-	pagination, err := extractPagination(linkHeader)
+	pagination, err := s.client.ListWithPagination(path, resource, options)
 	if err != nil {
 		return nil, nil, err
 	}
 
 	return resource.Products, pagination, nil
-}
-
-// extractPagination extracts pagination info from linkHeader.
-// Details on the format are here:
-// https://help.shopify.com/en/api/guides/paginated-rest-results
-func extractPagination(linkHeader string) (*Pagination, error) {
-	pagination := new(Pagination)
-
-	if linkHeader == "" {
-		return pagination, nil
-	}
-
-	for _, link := range strings.Split(linkHeader, ",") {
-		match := linkRegex.FindStringSubmatch(link)
-		// Make sure the link is not empty or invalid
-		if len(match) != 3 {
-			// We expect 3 values:
-			// match[0] = full match
-			// match[1] is the URL and match[2] is either 'previous' or 'next'
-			err := ResponseDecodingError{
-				Message: "could not extract pagination link header",
-			}
-			return nil, err
-		}
-
-		rel, err := url.Parse(match[1])
-		if err != nil {
-			err = ResponseDecodingError{
-				Message: "pagination does not contain a valid URL",
-			}
-			return nil, err
-		}
-
-		params, err := url.ParseQuery(rel.RawQuery)
-		if err != nil {
-			return nil, err
-		}
-
-		paginationListOptions := ListOptions{}
-
-		paginationListOptions.PageInfo = params.Get("page_info")
-		if paginationListOptions.PageInfo == "" {
-			err = ResponseDecodingError{
-				Message: "page_info is missing",
-			}
-			return nil, err
-		}
-
-		limit := params.Get("limit")
-		if limit != "" {
-			paginationListOptions.Limit, err = strconv.Atoi(params.Get("limit"))
-			if err != nil {
-				return nil, err
-			}
-		}
-
-		// 'rel' is either next or previous
-		if match[2] == "next" {
-			pagination.NextPageOptions = &paginationListOptions
-		} else {
-			pagination.PreviousPageOptions = &paginationListOptions
-		}
-	}
-
-	return pagination, nil
 }
 
 // Count products

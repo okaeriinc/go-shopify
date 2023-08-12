@@ -35,7 +35,7 @@ type PriceRule struct {
 	TargetType                             string                                  `json:"target_type,omitempty"`
 	TargetSelection                        string                                  `json:"target_selection,omitempty"`
 	AllocationMethod                       string                                  `json:"allocation_method,omitempty"`
-	AllocationLimit                        string                                  `json:"allocation_limit,omitempty"`
+	AllocationLimit                        int                                     `json:"allocation_limit,omitempty"`
 	OncePerCustomer                        bool                                    `json:"once_per_customer,omitempty"`
 	UsageLimit                             int                                     `json:"usage_limit,omitempty"`
 	StartsAt                               *time.Time                              `json:"starts_at,omitempty"`
@@ -90,7 +90,7 @@ func (pr *PriceRule) SetPrerequisiteSubtotalRange(greaterThanOrEqualTo *string) 
 		pr.PrerequisiteSubtotalRange = nil
 	} else {
 		if !validateMoney(*greaterThanOrEqualTo) {
-			return fmt.Errorf("failed to parse value as Decimal, invalid value")
+			return fmt.Errorf("failed to parse value as Decimal, invalid prerequisite subtotal range")
 		}
 
 		pr.PrerequisiteSubtotalRange = &prerequisiteSubtotalRange{
@@ -118,7 +118,7 @@ func (pr *PriceRule) SetPrerequisiteShippingPriceRange(lessThanOrEqualTo *string
 		pr.PrerequisiteShippingPriceRange = nil
 	} else {
 		if !validateMoney(*lessThanOrEqualTo) {
-			return fmt.Errorf("failed to parse value as Decimal, invalid value")
+			return fmt.Errorf("failed to parse value as Decimal, invalid prerequisite shipping price range")
 		}
 
 		pr.PrerequisiteShippingPriceRange = &prerequisiteShippingPriceRange{
@@ -147,7 +147,7 @@ func (pr *PriceRule) SetPrerequisiteToEntitlementQuantityRatio(prerequisiteQuant
 
 	pr.PrerequisiteToEntitlementQuantityRatio = &prerequisiteToEntitlementQuantityRatio{
 		PrerequisiteQuantity: pQuant,
-		EntitledQuantity: eQuant,
+		EntitledQuantity:     eQuant,
 	}
 }
 

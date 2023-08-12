@@ -9,14 +9,14 @@ import (
 
 const carrierBasePath = "carrier_services"
 
-// CarrierService is an interface for interfacing with the carrier service endpoints
+// CarrierServiceService is an interface for interfacing with the carrier service endpoints
 // of the Shopify API.
 // See: https://shopify.dev/docs/admin-api/rest/reference/shipping-and-fulfillment/carrierservice
-type CarrierService interface {
-	List() ([]CarrierResource, error)
-	Get(int64) (*CarrierResource, error)
-	Create(CarrierResource) (*CarrierResource, error)
-	Update(CarrierResource) (*CarrierResource, error)
+type CarrierServiceService interface {
+	List() ([]CarrierService, error)
+	Get(int64) (*CarrierService, error)
+	Create(CarrierService) (*CarrierService, error)
+	Update(CarrierService) (*CarrierService, error)
 	Delete(int64) error
 }
 
@@ -26,19 +26,19 @@ type CarrierServiceOp struct {
 	client *Client
 }
 
-// CarrierResource represents a Shopify carrier service
-type CarrierResource struct {
+// CarrierService represents a Shopify carrier service
+type CarrierService struct {
 	// Whether this carrier service is active.
 	Active bool `json:"active,omitempty"`
 
 	// The URL endpoint that Shopify needs to retrieve shipping rates. This must be a public URL.
-	CallbackURL string `json:"callback_url,omitempty"`
+	CallbackUrl string `json:"callback_url,omitempty"`
 
 	// Distinguishes between API or legacy carrier services.
 	CarrierServiceType string `json:"carrier_service_type,omitempty"`
 
-	// The ID of the carrier service.
-	ID int64 `json:"id,omitempty"`
+	// The Id of the carrier service.
+	Id int64 `json:"id,omitempty"`
 
 	// The format of the data returned by the URL endpoint. Valid values: json and xml. Default value: json.
 	Format string `json:"format,omitempty"`
@@ -53,11 +53,11 @@ type CarrierResource struct {
 }
 
 type SingleCarrierResource struct {
-	CarrierService *CarrierResource `json:"carrier_service"`
+	CarrierService *CarrierService `json:"carrier_service"`
 }
 
 type ListCarrierResource struct {
-	CarrierServices []CarrierResource `json:"carrier_services"`
+	CarrierServices []CarrierService `json:"carrier_services"`
 }
 
 type ShippingRateRequest struct {
@@ -122,7 +122,7 @@ type ShippingRate struct {
 	TotalPrice decimal.Decimal `json:"total_price"`
 
 	// Whether the customer must provide a phone number at checkout.
-	PhoneRequired bool `json:phone_required,omitempty"`
+	PhoneRequired bool `json:"phone_required,omitempty"`
 
 	// The earliest delivery date for the displayed rate.
 	MinDeliveryDate *time.Time `json:"min_delivery_date"` // "2013-04-12 14:48:45 -0400"
@@ -132,7 +132,7 @@ type ShippingRate struct {
 }
 
 // List carrier services
-func (s *CarrierServiceOp) List() ([]CarrierResource, error) {
+func (s *CarrierServiceOp) List() ([]CarrierService, error) {
 	path := fmt.Sprintf("%s.json", carrierBasePath)
 	resource := new(ListCarrierResource)
 	err := s.client.Get(path, resource, nil)
@@ -140,7 +140,7 @@ func (s *CarrierServiceOp) List() ([]CarrierResource, error) {
 }
 
 // Get individual carrier resource by carrier resource ID
-func (s *CarrierServiceOp) Get(id int64) (*CarrierResource, error) {
+func (s *CarrierServiceOp) Get(id int64) (*CarrierService, error) {
 	path := fmt.Sprintf("%s/%d.json", carrierBasePath, id)
 	resource := new(SingleCarrierResource)
 	err := s.client.Get(path, resource, nil)
@@ -148,7 +148,7 @@ func (s *CarrierServiceOp) Get(id int64) (*CarrierResource, error) {
 }
 
 // Create a carrier service
-func (s *CarrierServiceOp) Create(carrier CarrierResource) (*CarrierResource, error) {
+func (s *CarrierServiceOp) Create(carrier CarrierService) (*CarrierService, error) {
 	path := fmt.Sprintf("%s.json", carrierBasePath)
 	body := SingleCarrierResource{
 		CarrierService: &carrier,
@@ -159,8 +159,8 @@ func (s *CarrierServiceOp) Create(carrier CarrierResource) (*CarrierResource, er
 }
 
 // Update a carrier service
-func (s *CarrierServiceOp) Update(carrier CarrierResource) (*CarrierResource, error) {
-	path := fmt.Sprintf("%s/%d.json", carrierBasePath, carrier.ID)
+func (s *CarrierServiceOp) Update(carrier CarrierService) (*CarrierService, error) {
+	path := fmt.Sprintf("%s/%d.json", carrierBasePath, carrier.Id)
 	body := SingleCarrierResource{
 		CarrierService: &carrier,
 	}
@@ -170,6 +170,6 @@ func (s *CarrierServiceOp) Update(carrier CarrierResource) (*CarrierResource, er
 }
 
 // Delete a carrier service
-func (s *CarrierServiceOp) Delete(productID int64) error {
-	return s.client.Delete(fmt.Sprintf("%s/%d.json", carrierBasePath, productID))
+func (s *CarrierServiceOp) Delete(id int64) error {
+	return s.client.Delete(fmt.Sprintf("%s/%d.json", carrierBasePath, id))
 }
