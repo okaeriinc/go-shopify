@@ -2,6 +2,7 @@ package goshopify
 
 import (
 	"fmt"
+	"net/url"
 	"time"
 )
 
@@ -16,6 +17,7 @@ type DiscountCodeService interface {
 	List(int64) ([]PriceRuleDiscountCode, error)
 	Get(int64, int64) (*PriceRuleDiscountCode, error)
 	Delete(int64, int64) error
+	Lookup(string) (*PriceRuleDiscountCode, error)
 }
 
 // DiscountCodeServiceOp handles communication with the discount code
@@ -81,4 +83,14 @@ func (s *DiscountCodeServiceOp) Get(priceRuleID int64, discountCodeID int64) (*P
 // Delete a discount code
 func (s *DiscountCodeServiceOp) Delete(priceRuleID int64, discountCodeID int64) error {
 	return s.client.Delete(fmt.Sprintf(discountCodeBasePath+"/%d.json", priceRuleID, discountCodeID))
+}
+
+// Lookup a single discount code
+func (s *DiscountCodeServiceOp) Lookup(discountCode string) (*PriceRuleDiscountCode, error) {
+	v := url.Values{}
+	v.Add("code", discountCode)
+	path := fmt.Sprintf("discount_codes/lookup.json?%s", v.Encode())
+	resource := new(DiscountCodeResource)
+	err := s.client.Get(path, resource, nil)
+	return resource.PriceRuleDiscountCode, err
 }

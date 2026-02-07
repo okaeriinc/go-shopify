@@ -23,7 +23,7 @@ type DraftOrderService interface {
 	Update(DraftOrder) (*DraftOrder, error)
 	Delete(int64) error
 	Invoice(int64, DraftOrderInvoice) (*DraftOrderInvoice, error)
-	Complete(int64, bool) (*DraftOrder, error)
+	Complete(int64, bool, string) (*DraftOrder, error)
 
 	// MetafieldsService used for DrafT Order resource to communicate with Metafields resource
 	MetafieldsService
@@ -174,8 +174,11 @@ func (s *DraftOrderServiceOp) Update(draftOrder DraftOrder) (*DraftOrder, error)
 }
 
 // Complete draft order
-func (s *DraftOrderServiceOp) Complete(draftOrderID int64, paymentPending bool) (*DraftOrder, error) {
+func (s *DraftOrderServiceOp) Complete(draftOrderID int64, paymentPending bool, paymentGatewayId string) (*DraftOrder, error) {
 	path := fmt.Sprintf("%s/%d/complete.json?payment_pending=%t", draftOrdersBasePath, draftOrderID, paymentPending)
+	if paymentGatewayId != "" {
+		path = fmt.Sprintf("%s&payment_gateway=%s", path, paymentGatewayId)
+	}
 	resource := new(DraftOrderResource)
 	err := s.client.Put(path, nil, resource)
 	return resource.DraftOrder, err
